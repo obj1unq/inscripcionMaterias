@@ -1,15 +1,59 @@
-class Materia {
-  var requisitos = #{}
-  const property inscriptos = #{}
-  method requisitos(_requisitos) {
-    requisitos = _requisitos
+object sinRequisito {
+
+  method cumple(estudiante, materia) {
+    return true
   }
+
+}
+
+class Correlativas {
+  const materias
+
+  method cumple(estudiante, materia) {
+    return materias.all({_materia => estudiante.aprobada(_materia)})
+  }
+}
+
+class Creditos {
+  
+  const creditosNecesarios
+  const carrera 
+
+  method cumple(estudiante, materia) {
+    return estudiante.creditos(carrera) >= creditosNecesarios
+  }
+
+}
+
+class AñoCompleto {
+  const carrera 
+  method cumple(estudiante, materia) {
+    return estudiante.añoCompleto(carrera, materia.añoPrevio()) 
+  }
+
+}
+
+class Materia {
+  var requisito = sinRequisito
+  const property año = 1
+  const property creditos = 0
+
+  const property inscriptos = #{}
+
+  method añoPrevio() {
+    return año -1 
+  }
+
+  method requisito(_requisito) {
+    requisito = _requisito
+  }
+
   method inscripto(estudiante) {
     return inscriptos.contains(estudiante)
   } 
 
   method cumpleRequisitos(estudiante) {
-    return requisitos.all({requisito => estudiante.aprobada(requisito)})
+    return requisito.cumple(estudiante, self)
   }
 
   method aceptaInscribir(estudiante) {
@@ -28,6 +72,9 @@ class Carrera {
 
   method materiasInscribibles(estudiante){
     return materias.filter({materia => estudiante.puedeInscribirMateria(materia)})
+  }
+  method añoCompleto(estudiante, año) {
+    return materias.filter({materia => materia.año() == año}).all({materia => estudiante.aprobada(materia)})
   }
 }
 
@@ -48,6 +95,9 @@ class Cursada {
 
   method aprobada() {
     return nota.between(6, 10)
+  }
+  method creditos() {
+    return materia.creditos()
   }
 }
 
@@ -118,6 +168,15 @@ class Estudiante {
       if (not self.puedeInscribirMateria(materia)) {
         self.error("No se puede inscribir a " + materia)
       }
+    }
+
+    //TODO, quizas no necesito este pasamanos
+    method añoCompleto(carrera, año) {
+      return carrera.añoCompleto(self, año)
+    }
+
+    method creditos(carrera) {
+      return self.cursadasAprobadas(carrera).sum({cursada => cursada.creditos()})
     }
 
 }

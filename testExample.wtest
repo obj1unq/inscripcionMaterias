@@ -3,25 +3,21 @@ import example.*
 describe "test de universidad" {
 
   const epl = new Materia()
-  const mate1 = new Materia()
-  const obj1 = new Materia()
+  const mate1 = new Materia(año=1, creditos=8)
+  const obj1 = new Materia(año=1, creditos=8)
   const obj2 = new Materia()
   const obj3 = new Materia()
-  const bd = new Materia()
+  const bd = new Materia(año=1, creditos=8)
   const pconc = new Materia()
   const meya = new Materia()
   const tys = new Materia()
   const economia = new Materia()
   const desarrolloLocal = new Materia()
-  const lea = new Materia()
-  const ciencias = new Materia()
-  const psicologia = new Materia()
-  const antro = new Materia()
-  const socio = new Materia()
-
-
-
-
+  const lea = new Materia(año=1, creditos=8)
+  const ciencias = new Materia(año=1, creditos=8)
+  const psicologia = new Materia(año=2, creditos=4)
+  const antro = new Materia(año=2, creditos=4)
+  const socio = new Materia(año=3, creditos=8)
 
   const programacion = new Carrera(materias=#{epl, mate1, obj1, obj2, obj3, bd, pconc})
   const tuess = new Carrera(materias=#{meya, tys, economia, desarrolloLocal})
@@ -30,12 +26,19 @@ describe "test de universidad" {
   const alex = new Estudiante()
   const andy = new Estudiante()
 
+
+
   method initialize() {
 
-    obj2.requisitos(#{obj1, mate1})
-    obj3.requisitos(#{obj2,bd})
-    pconc.requisitos(#{obj1,bd})
-    desarrolloLocal.requisitos(#{meya})
+    obj2.requisito(new Correlativas(materias = #{obj1, mate1}))
+    obj3.requisito(new Correlativas(materias =#{obj2,bd}))
+    pconc.requisito(new Correlativas(materias =#{obj1,bd}))
+    desarrolloLocal.requisito(new Correlativas(materias =#{meya}))
+
+    psicologia.requisito(new AñoCompleto(carrera=to)) //otra opcion es cambiar para que las materias sepan la carrera, pero me lleva refactorizar la manera de construirlas
+    antro.requisito(new Creditos(carrera=to, creditosNecesarios=8))
+    socio.requisito(new Creditos(carrera=to, creditosNecesarios=10))
+
 
     alex.inscribir(programacion)
     alex.inscribir(tuess)
@@ -47,6 +50,7 @@ describe "test de universidad" {
     alex.cursada(mate1, 8)
     alex.cursada(bd, 2)
 
+    andy.inscribir(to)
     andy.inscribir(programacion)
     andy.cursada(obj1,10)
     andy.cursada(mate1, 10)
@@ -88,5 +92,31 @@ describe "test de universidad" {
     assert.throwsException({alex.inscribirMateria(obj2)})
     andy.inscribirMateria(obj2)
     assert.equals(#{andy,alex}, obj2.inscriptos())
+  }
+
+  test "requisitos de creditos y años" {
+    assert.equals(#{lea, ciencias}, to.materiasInscribibles(andy))
+    andy.cursada(lea, 10)
+    assert.equals(8, andy.creditos(to))
+    assert.notThat(andy.añoCompleto(to, 1))
+
+    assert.equals(#{antro, ciencias}, to.materiasInscribibles(andy))
+    andy.cursada(antro, 10)
+    assert.equals(12, andy.creditos(to))
+    assert.notThat(andy.añoCompleto(to, 1))
+
+    assert.equals(#{socio, ciencias}, to.materiasInscribibles(andy))
+    andy.cursada(ciencias, 10)
+    assert.equals(20, andy.creditos(to))
+    assert.that(andy.añoCompleto(to, 1))
+
+    assert.equals(#{psicologia, socio}, to.materiasInscribibles(andy))
+    andy.inscribirMateria(psicologia)
+    andy.inscribirMateria(socio)
+
+    assert.equals(#{andy}, psicologia.inscriptos())
+    assert.equals(#{andy}, socio.inscriptos())
+
+    
   }
 }
