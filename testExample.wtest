@@ -1,9 +1,61 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
+describe "test de universidad" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  const epl = new Materia()
+  const mate1 = new Materia()
+  const obj1 = new Materia()
+  const obj2 = new Materia()
+  const obj3 = new Materia()
+  const bd = new Materia()
+  const pconc = new Materia()
+  const meya = new Materia()
+  const tys = new Materia()
+  const economia = new Materia()
+  const desarrolloSocial = new Materia()
+  const lea = new Materia()
+  const ciencias = new Materia()
+  const psicologia = new Materia()
+  const antro = new Materia()
+  const socio = new Materia()
+
+
+
+  const programacion = new Carrera(materias=#{epl, mate1, obj1, obj2, obj3, bd, pconc})
+  const tuess = new Carrera(materias=#{meya, tys, economia, desarrolloSocial})
+  const to  = new Carrera(materias=#{lea, ciencias,psicologia, antro, socio})
+
+  const alex = new Estudiante()
+
+  method initialize() {
+    alex.inscribir(programacion)
+    alex.inscribir(tuess)
+
+    alex.cursada(mate1, 2)
+    alex.cursada(obj1, 10)
+    alex.cursada(economia, 6)
+    alex.cursada(desarrolloSocial, 8)
+    alex.cursada(mate1, 8)
+    alex.cursada(bd, 2)
   }
-
+  test "alex carreras" {
+      assert.equals(#{programacion, tuess}, alex.carreras())
+      assert.that(alex.perteneceASusCarreras(bd))
+      assert.notThat(alex.perteneceASusCarreras(psicologia))
+      assert.throwsException({alex.inscribir(programacion)})
+  }
+  test "alex cursadas" {
+    assert.throwsException({alex.cursada(mate1, 7)})
+    assert.throwsException({alex.cursada(bd, 12)})
+    assert.that(alex.aprobada(mate1))
+    assert.notThat(alex.aprobada(bd))
+    assert.equals(9, alex.promedio(programacion))
+    assert.equals(2, alex.cantidadAprobadas(programacion))
+    assert.equals(7, alex.promedio(tuess))
+    assert.throwsException({ alex.promedio(to) })
+    alex.inscribir(to)
+    assert.throwsException({ alex.promedio(to) })
+    assert.equals(8, alex.promedio())
+    assert.equals([2,8], alex.cursadas(mate1).map({cursada => cursada.nota()}))
+  }
 }
