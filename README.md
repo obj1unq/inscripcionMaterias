@@ -61,7 +61,7 @@ Teniendo en cuenta las inscripciones a carreras del punto anterior:
  - Matemática 1 con nota 2. 
  - Objetos 1 con nota 10.
  - economía con nota 6
- - desarrollo social con nota 8
+ - Trabajo y Sociedad (tys) con nota 8
  - Matemática 1 con nota 8.
  - Base de Datos con nota 2.
 2. Intentar registrar que Alex cursó Matemática 1 con nota 7. No se debería poder porque ya está aprobada
@@ -79,45 +79,101 @@ Teniendo en cuenta las inscripciones a carreras del punto anterior:
 Tip: Usar un `method initialize()` en el describe para no repetir el escenario inicial con el test del punto anterio
 
 
-## Parte 2 Condiciones para inscribirse
+## Parte 3 Incripciones a las materias
 
-Las materias de las carreras pueden establerecer _pre-requisitos_ para aceptar una persona estudiante. Los
-_pre-requisitos_ son otras materias que deberían haber cursado previamente:
+El sistema permite administrar las inscripciones a la materia para el cuatrimestre actual. El objetivo de este proceso es obtener para cada
+materia la colección de estudiantes que se inscribieron.
 
-Requerimientos
+Las materias de las carreras pueden establerecer _requisitos_ para aceptar una persona estudiante. Los
+_requisitos_ son otras materias que deberían haber cursado previamente:
 
-1. Determinar si una persona _e_ puede inscribirse a una materia _m_. Para esto se deben cumplir cuatro condiciones: 
+TIP: Ojo!  Armar el grafo de requisitos puede no ser tan trivial.
+
+Si se elije configurar los requisitos en la instanciación usando un atributo constante en Materia:
+``` 
+class Materia {
+    const requisitos = #{}
+}
+
+const obj1 = new Materia()
+const mate1 = new Materia()
+const obj2 = new Materia(requisitos=#{obj1, mate1})`
+```
+hay que tener cuidado que obj1 y mate1 también se hayan instanciado antes. Esas materias también podrían necesitar requisitos que son otras materias también deben instanciarse antes!. Esta estrategia  funciona porque las dependencias, en este caso concreto, forman un árbol: siempre se pueden instanciar los requisitos antes que la materia que los necesita. Hay que tener mucho cuidado del orden en que se instancia.
+
+Pero en muchas situaciones parecidas, las dependencias entre instancias pueden ser cíclicas: A necesita B , B necesita a C y C necesita A. 
+En un caso así, no es posible configurar en la instanciación. Una estrategia más simple en la cual no es necesario pensar el orden
+en que se instancian es dividir la construcción en dos fases: primero se instancian todas las materias y se usa un atributo variable sin pasarle un valor inicial en el new.  luego se configuran los requisitos con un setter.
+
+```
+
+class Materia {
+    var requisitos = #{}
+    method requisitos(_values) {requisitos = _values}
+}
+
+const obj2 = new Materia()
+const obj1 = new Materia()
+const mate1 = new Materia()
+
+obj2.requisitos(#{obj1, mate1})
+``` 
+
+### Requerimientos
+
+1. Determinar si una persona estudiante _e_ puede inscribirse a una materia _m_. Para esto se deben cumplir cuatro condiciones: 
 
     - _m_ debe corresponder a alguna de las carreras en la que está inscripta _e_, 
     - _e_ no puede haber aprobado _m_ previamente, 
     - _e_ no debe estar estar ya inscripta en _m_,
-    - _e_ debe tener aprobadas todas las materias que se declaran como _pre-requisitos_ de _m_.  
+    - _e_ debe tener aprobadas todas las materias que se declaran como _requisitos_ de _m_.  
     
 
-2. Inscribir una persona _e_ a una materia _m_, verificando las condiciones de inscripción de la materia. Si no se cumplen las condiciones, lanzar un error. 
+2. Inscribir una persona _e_ a una materia _m_, validando las condiciones de inscripción de la materia. 
 
-
-3. Materias habilitadas en una carrera: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir (y no cursó). Sólo vale si está cursando esa carrera.  
+3. Materias habilitadas en una carrera: dada una carrera y un estudiante, conocer todas las materias de esa carrera a las que se puede inscribir el estudiante, teniendo en cuenta todas las restricciones del punto 1.
 
 
 
 ### Casos de prueba
 Se utiliza el escenario del caso de prueba anterior, incluyendo las carreras inscriptas y materias aprobadas 
-que se menciona en los primeros 2 puntos.
+que se menciona en el punto 1
 
-Además, se se determinan lo siguientes pre-requisitos:
+Además, se se determinan lo siguientes requisitos:
 
 * Los requisitos de Obj2 son Obj1 y Mate1.
 * Los requisitos de Obj3 son Obj2 y BD.
 * Los requisitos de PConc son Obj1 y BD.
-* Economía tiene como único requisito a TyS.
+* Desarrollo local tiene como único requisito a Matemática para economía y administración (MEyA).
+
+Andy es una persona estudiante que está que está inscripta en la carrera de Programación y tiene aprobado obj1 con 10 y mate1 con 10.
+
+1. Verificar que Alex podría inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1, además de estar en la carrera de programación.
+2. Verificar que en la carrera de Programación, las materias que puede inscribirse Alex inscribirse son epl, obj2 y bd 
+3. Verificar que en la carrera de TUESS, la única materia en que se puede inscribirse Alex es MEyA.
+4. Verificar que Alex no podría inscribirse a psicología. (No está inscripto en la carrera TO)
+5. Intentar inscribir a Alex en psicología, pero no se puede.
+6. Verificar que Alex no podría inscribirse en economía. (ya está inscripto)
+7. Intentar inscribir a Alex en economía, pero no se puede.
+8. Verificar que Alex no podría inscribirse en Desarrollo Local. (no tiene Aprobado MEyA)
+9. Intentar inscribir a Alex en desarrollo Local, pero no se puede.
+10. Realizar la inscripción de Alex a Obj2.
+11. Intentar inscribir a Alex nuevamente en Obj2, no se puede porque ya está inscripta  
+12. Realizar la inscripción de Andy a Obj2.
+13. Verificar que las personas estudiantes inscriptas en Obj2 son Alex y Andy
 
 
-1. Verificar que Alex puede inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1.
-2. Verificar que la carrera de Programación le permite a Alex inscribirse a obj2 y bd 
-3. Verificar que la carrera de TUESS le permite a Alex inscribirse en MEyA, TyS, Desarrollo Local.
-4. Verificar que las materias habilitadas para Alex son MEyA, TyS, Desarrollo Local,obj2 y bd
-3. Realizar la inscripción de Alex a Obj2 y verificar que efectivamente quedó inscripta. 
+## Parte 4: Distintos tipos de requisitos
+
+Agregar al modelo la capacidad de expresar otros tipos de requisitos (no sólo un conjunto de materias previamente aprobadas) a la hora de verificar la inscripción a una materia. Otras opciones son:
+
+   * Requerir una cantidad de créditos. Esto implica que cada materia conozca la cantidad de _créditos_ que otorga. Por ejemplo, para inscribirse en Trabajo Final se necesita haber acumulado 250 créditos.
+
+   * Requerir todas las materias del año anterior. Para esto es necesario poder indicar a qué año pertenece cada materia. Por ejemplo, para cursar Obj3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. 
+
+   * No requerir nada. Es decir no tener requerimientos. Por ejemplo EPyL es una de las primeras materias y por lo tanto no tiene ninguna condición especial, cualquiera puede cursarla.
+
+Cada materia tiene sólo uno de estos tipos de requisitos: correlativas, cŕeditos, por año o nada. 
 
 
 
@@ -154,17 +210,6 @@ Realizar estos tests:
 * Si después se da de baja Romina en Obj2, entonces Alex pasa a tener la inscripción confirmada en esa materia.
 
 
-## Parte 4: Distintos tipos de requisitos
-
-Agregar al modelo la capacidad de expresar otros tipos de requisitos (no sólo un conjunto de materias previamente aprobadas) a la hora de verificar la inscripción a una materia. Otras opciones son:
-
-   * Requerir una cantidad de créditos. Esto implica que cada materia conozca la cantidad de _créditos_ que otorga. Por ejemplo, para inscribirse en Trabajo Final se necesita haber acumulado 250 créditos.
-
-   * Requerir todas las materias del año anterior. Para esto es necesario poder indicar a qué año pertenece cada materia. Por ejemplo, para cursar Obj3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. 
-
-   * No requerir nada. Es decir no tener requerimientos. Por ejemplo EPyL es una de las primeras materias y por lo tanto no tiene ninguna condición especial, cualquiera puede cursarla.
-
-Cada materia tiene sólo uno de estos tipos de requisitos: correlativas, cŕeditos, por año o nada. 
 
 ## Parte 5: Gestión de la lista de espera
 
