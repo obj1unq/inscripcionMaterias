@@ -1,11 +1,33 @@
 class Materia {
+  var requisitos = #{}
+  const property inscriptos = #{}
+  method requisitos(_requisitos) {
+    requisitos = _requisitos
+  }
+  method inscripto(estudiante) {
+    return inscriptos.contains(estudiante)
+  } 
 
+  method cumpleRequisitos(estudiante) {
+    return requisitos.all({requisito => estudiante.aprobada(requisito)})
+  }
+
+  method aceptaInscribir(estudiante) {
+    return not self.inscripto(estudiante) and self.cumpleRequisitos(estudiante)
+  }
+  method inscribir(estudiante) {
+    inscriptos.add(estudiante)
+  }
 }
 class Carrera {
   const property materias
 
   method pertenece(materia) {
     return materias.contains(materia)
+  }
+
+  method materiasInscribibles(estudiante){
+    return materias.filter({materia => estudiante.puedeInscribirMateria(materia)})
   }
 }
 
@@ -57,7 +79,7 @@ class Estudiante {
       }
     }
     method puedeRegistrarCursada(materia, nota) {
-        return nota.between(1, 10) and not self.aprobada(materia) and self.perteneceASusCarreras(materia)
+        return nota.between(1, 10) and self.debeMateria(materia)
     }
     method aprobada(materia) {
       return cursadas.any({cursada => cursada.aprueba(materia)})
@@ -81,4 +103,21 @@ class Estudiante {
     method cursadas(materia) {
       return cursadas.filter({cursada => cursada.cursa(materia)})
     } 
+
+    method debeMateria(materia) {
+      return not self.aprobada(materia) and self.perteneceASusCarreras(materia)
+    }
+    method puedeInscribirMateria(materia) {
+      return self.debeMateria(materia) and materia.aceptaInscribir(self)
+    }
+    method inscribirMateria(materia) {
+      self.validarInscribirMateria(materia)
+      materia.inscribir(self)
+    }
+    method validarInscribirMateria(materia) {
+      if (not self.puedeInscribirMateria(materia)) {
+        self.error("No se puede inscribir a " + materia)
+      }
+    }
+
 }

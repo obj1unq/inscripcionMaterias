@@ -12,7 +12,7 @@ describe "test de universidad" {
   const meya = new Materia()
   const tys = new Materia()
   const economia = new Materia()
-  const desarrolloSocial = new Materia()
+  const desarrolloLocal = new Materia()
   const lea = new Materia()
   const ciencias = new Materia()
   const psicologia = new Materia()
@@ -21,22 +21,37 @@ describe "test de universidad" {
 
 
 
+
+
   const programacion = new Carrera(materias=#{epl, mate1, obj1, obj2, obj3, bd, pconc})
-  const tuess = new Carrera(materias=#{meya, tys, economia, desarrolloSocial})
+  const tuess = new Carrera(materias=#{meya, tys, economia, desarrolloLocal})
   const to  = new Carrera(materias=#{lea, ciencias,psicologia, antro, socio})
 
   const alex = new Estudiante()
+  const andy = new Estudiante()
 
   method initialize() {
+
+    obj2.requisitos(#{obj1, mate1})
+    obj3.requisitos(#{obj2,bd})
+    pconc.requisitos(#{obj1,bd})
+    desarrolloLocal.requisitos(#{meya})
+
     alex.inscribir(programacion)
     alex.inscribir(tuess)
 
     alex.cursada(mate1, 2)
     alex.cursada(obj1, 10)
     alex.cursada(economia, 6)
-    alex.cursada(desarrolloSocial, 8)
+    alex.cursada(tys, 8)
     alex.cursada(mate1, 8)
     alex.cursada(bd, 2)
+
+    andy.inscribir(programacion)
+    andy.cursada(obj1,10)
+    andy.cursada(mate1, 10)
+
+
   }
   test "alex carreras" {
       assert.equals(#{programacion, tuess}, alex.carreras())
@@ -57,5 +72,21 @@ describe "test de universidad" {
     assert.throwsException({ alex.promedio(to) })
     assert.equals(8, alex.promedio())
     assert.equals([2,8], alex.cursadas(mate1).map({cursada => cursada.nota()}))
+  }
+
+  test "inscripciones de materias" {
+    
+    assert.equals(#{epl, obj2, bd}, programacion.materiasInscribibles(alex))
+    assert.equals(#{meya}, tuess.materiasInscribibles(alex))
+    assert.notThat(alex.puedeInscribirMateria(psicologia))
+    assert.throwsException({alex.inscribirMateria(psicologia)})
+    assert.notThat(alex.puedeInscribirMateria(economia))
+    assert.throwsException({alex.inscribirMateria(economia)})
+    assert.notThat(alex.puedeInscribirMateria(desarrolloLocal))
+    assert.throwsException({alex.inscribirMateria(desarrolloLocal)})
+    alex.inscribirMateria(obj2)
+    assert.throwsException({alex.inscribirMateria(obj2)})
+    andy.inscribirMateria(obj2)
+    assert.equals(#{andy,alex}, obj2.inscriptos())
   }
 }
