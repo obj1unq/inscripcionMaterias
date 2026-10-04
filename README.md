@@ -55,14 +55,17 @@ Requerimientos
 2. Inscribir una persona _e_ a una materia _m_, verificando las condiciones de inscripción de la materia. Si no se cumplen las condiciones, lanzar un error. 
 
 
-3. Materias habilitadas en una carrera: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir. Sólo vale si está cursando esa carrera.  
+3. Materias habilitadas en una carrera: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir (y no cursó). Sólo vale si está cursando esa carrera.  
 
 
 
 ### Casos de prueba
 
 1. Verificar que Alex puede inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1.
-2. Realizar la inscripción de Alex a Obj2 y verificar que efectivamente quedó inscripta. 
+2. Verificar que la carrera de Programación le permite a Alex inscribirse a obj2 y bd 
+3. Verificar que la carrera de TUESS le permite a Alex inscribirse en MEyA, TyS, Desarrollo Local.
+4. Verificar que las materias habilitadas para Alex son MEyA, TyS, Desarrollo Local,obj2 y bd
+3. Realizar la inscripción de Alex a Obj2 y verificar que efectivamente quedó inscripta. 
 
 
 ## Parte 3: Listas de espera
