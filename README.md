@@ -10,27 +10,25 @@ Cada materia pertenece a una única carrera y puede tener otras materias como pr
 
 Construir un modelo que permita resolver los siguientes requerimientos: 
 
-1. Registrar una materia aprobada por una persona indicando la nota obtenida. Si esta persona ya tiene registrada la aprobación de la materia, se debe lanzar un error. 
+1. Registrar que una persona estudiante finalizó al cursada de una materia indicando la nota obtenida (entre 1 y 10). Para poder cumplirse el requerimiento
+es importante que la nota sea entre 1 y 10 y la persona no haya aprobado antes la materia. Es decir, no hay aregistrado previamente la finalización de 
+una cursada con una nota entre 6 y 10. 
 
-    > **Tip**: La nota con la que la persona aprobó una materia, no puede ser un atributo de la persona (porque la persona tiene muchas notas) ni de la materia (porque una materia es cursada por muchas personas). 
+    > **Tip**: La nota con la que la persona aprobó una materia, no puede ser un atributo de la persona (porque la persona tiene muchas notas) ni de la materia (porque una materia es cursada por muchas personas). Es necesario pensar una abstracción que modele la situación: "Alex cursó matemática con nota 10"  
 
 2. Conocer para una persona: si tiene o no aprobada una materia (su nota alcanza la calificación 6). Es decir, si alguna vez alcanzó esa nota en esa materia (la pudo haber cursado mas de una vez). 
 
-3. Conocer para una persona la cantidad de materias aprobadas y el promedio **en una determinada carrera**
+3. Conocer para una persona la cantidad de materias aprobadas y el promedio **en una determinada carrera**. Para el promedio sólo se tiene en cuenta las materias aprobadas
 
-3. Saber para una persona: la colección de materias de **todas** las carreras a las que está inscripta.
+4. Saber para una persona todas las cursadas de una materia en el orden en que fueron registrados.
 
 ### Casos de prueba
 
-En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Economía Social y solidaria(TUESS)_ y _TO_.
+En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Economía Social y solidaria(TUESS)_ y _Terapia Ocupacional (TO)_.
 
 * Programación incluye estas materias: Elementos de Programación, Matemática 1, Objetos 1, Objetos 2, Objetos 3, Trabajo Final, Bases de Datos(BD), Programación Concurrente (PConc)
 * TUESS incluye Matemáticas para economía y administración (MEyA), Trabajo y sociedad (TyS), Economía, Desarrollo local.
 * TO incluye Lectura y escritura académica (LEA), Ciencias de la Salud, Psicología, Antropología, Sociología.
-* Los requisitos de Obj2 son Obj1 y Mate1.
-* Los requisitos de Obj3 son Obj2 y BD.
-* Los requisitos de PConc son Obj1 y BD.
-* Economía tiene como único requisito a TyS.
 
 Escenario
 1. Hacer que la estudiante _Alex_ se anote en las carreras de Programación y TUESS. 
@@ -41,6 +39,9 @@ Escenario
 
 
 ## Parte 2 Condiciones para inscribirse
+
+Las materias de las carreras pueden establerecer _pre-requisitos_ para aceptar una persona estudiante. Los
+_pre-requisitos_ son otras materias que deberían haber cursado previamente:
 
 Requerimientos
 
@@ -60,6 +61,13 @@ Requerimientos
 
 
 ### Casos de prueba
+Utilizando el modelo del caso de prueba anterir, se determinan lo siguientes pre-requisitos:
+
+* Los requisitos de Obj2 son Obj1 y Mate1.
+* Los requisitos de Obj3 son Obj2 y BD.
+* Los requisitos de PConc son Obj1 y BD.
+* Economía tiene como único requisito a TyS.
+
 
 1. Verificar que Alex puede inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1.
 2. Verificar que la carrera de Programación le permite a Alex inscribirse a obj2 y bd 
