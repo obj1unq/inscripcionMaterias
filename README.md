@@ -2,27 +2,22 @@
 
 En una Universidad de un país latinoamericano se necesita un sistema que permita realizar la inscripción a materias. En esta universidad se tiene un único curso de cada materia y sólo se maneja información de un cuatrimestre (no se consideran inscripciones anteriores). En cambio, sí se debe conocer el historial de materias aprobadas de una persona estudiante, junto con la nota que obtuvo.
 
-## Parte 1 Historia académica
+## Parte 1 Inscripción a carreras
 
-Cada materia pertenece a una única carrera y puede tener otras materias como prerrequisitos. Además, un estudiante puede estar cursando distintas carreras. 
+Una persona estudiante se puede inscribir a una o más carreras.
 
-### Requerimientos
+Cada materia pertenece a una única carrera.  
 
+### Requererimientos
 Construir un modelo que permita resolver los siguientes requerimientos: 
 
-1. Registrar que una persona estudiante finalizó al cursada de una materia indicando la nota obtenida (entre 1 y 10). Para poder cumplirse el requerimiento
-es importante que la nota sea entre 1 y 10 y la persona no haya aprobado antes la materia. Es decir, no hay aregistrado previamente la finalización de 
-una cursada con una nota entre 6 y 10. 
+1. Inscribir a una persona a una carrera. Una persona no puede inscribirse a una carrera ya inscripta.
 
-    > **Tip**: La nota con la que la persona aprobó una materia, no puede ser un atributo de la persona (porque la persona tiene muchas notas) ni de la materia (porque una materia es cursada por muchas personas). Es necesario pensar una abstracción que modele la situación: "Alex cursó matemática con nota 10"  
+2. Saber las carreras en las que se inscribió una persona estudiante
 
-2. Conocer para una persona: si tiene o no aprobada una materia (su nota alcanza la calificación 6). Es decir, si alguna vez alcanzó esa nota en esa materia (la pudo haber cursado mas de una vez). 
+3. Saber si una materia pertenece a alguna de las carreras a las cuales está inscripto una persona estudiante 
 
-3. Conocer para una persona la cantidad de materias aprobadas y el promedio **en una determinada carrera**. Para el promedio sólo se tiene en cuenta las materias aprobadas
-
-4. Saber para una persona todas las cursadas de una materia en el orden en que fueron registrados.
-
-### Casos de prueba
+### Casos de ejemplo
 
 En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Economía Social y solidaria(TUESS)_ y _Terapia Ocupacional (TO)_.
 
@@ -31,15 +26,57 @@ En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Econ
 * TO incluye Lectura y escritura académica (LEA), Ciencias de la Salud, Psicología, Antropología, Sociología.
 
 Escenario
-1. Hacer que la estudiante _Alex_ se anote en las carreras de Programación y TUESS. 
-2. Registrar que alex cursó Matemática 1 con nota 2, luego  de Matemática 1 (con un 8), Objetos 1 (con un 10) y Base de Datos (con un 2)
-3. Intentar registrar que Alex cursó Matemática 1 con nota 7. No se debería poder porque ya está aprobada
-4. Intentar registrar que Alex cursó Objetos 2 con nota 12. No se debería poder porque no es una nota válida
-5. Verificar que Alex tiene aprobada Mate1 y Obj1
-6. Verificar que su promedio en Programación sea 9.
-7. Al intentar ver el promedio de TUESS no se puede, porque no tiene ninguna materia aprobada.
-8. Al intentar ver el promedio de TO no se puede, porque no está inscirpto en esa carrera
-9. Verificar que la historia de cursadas de Alex para mate 1 es una cursada con 2, y luego otra con 8.
+1. Hacer que la estudiante _Alex_ se anote en las carreras de Programación, TUESS.
+2. Verificar que _Alex_ está inscripto en Programación y TUESS (y no en TO)
+3. Verificar que base de datos es una de las materias de las carreras a la cual está inscripto _Alex_
+4. Verificar que Psicología no es una de las materias de las carreras a la cual está inscripto _Alex_
+5. Intentar inscribir a _Alex_ a programación, no se puede porque ya está inscripto
+
+
+## Parte 2 Historia académica
+
+Cada vez que una persona estudiante termina de cursar una materia se registra en el sistema indicando su nota. La nota es un valor numérico entre 1 y 10.
+Si la nota es entre 6 y 10 entonces está aprobada. 
+
+### Requerimientos
+
+
+1. Registrar que una persona estudiante finalizó al cursada de una materia indicando la nota obtenida. Para poder cumplir el requerimiento
+es importante que la nota sea entre 1 y 10 y la persona no haya aprobado previamente la materia. También se debe validar que la materia pertenezca a alguna de las carreras a la cual está inscripta (resuelto en el punto anterior)
+
+    > **Tip**: La nota con la que la persona aprobó una materia no puede ser un atributo de la persona (porque la persona tiene muchas notas) ni de la materia (porque una materia es cursada por muchas personas). Es necesario pensar una abstracción que modele la situación: "Alex cursó matemática 1 con nota 10"  
+
+2. Conocer para una persona: si tiene o no aprobada una materia (su nota alcanza la calificación 6). Es decir, si alguna vez alcanzó esa nota en esa materia (la pudo haber cursado mas de una vez). 
+
+3. Conocer para una persona la cantidad de materias aprobadas y el promedio de materias aprobadas **en una determinada carrera**. 
+
+4. Conocer para una persona la cantidad de materias aprobadas y el promedio de las materias aprobadas **en todas sus carreras**. 
+
+5. Saber para una persona todas las cursadas de una materia en el orden en que fueron registrados.
+
+### Casos de prueba
+Teniendo en cuenta las inscripciones a carreras del punto anterior:
+
+1. Registrar que alex cursó en este orden:
+ - Matemática 1 con nota 2. 
+ - Objetos 1 con nota 10.
+ - economía con nota 6
+ - desarrollo social con nota 8
+ - Matemática 1 con nota 8.
+ - Base de Datos con nota 2.
+2. Intentar registrar que Alex cursó Matemática 1 con nota 7. No se debería poder porque ya está aprobada
+3. Intentar registrar que Alex cursó Objetos 2 con nota 12. No se debería poder porque no es una nota válida
+4. Verificar que Alex tiene aprobada Mate1
+5. Verificar que Alex no tiene aprobada BD.
+6. Verificar que su promedio en _Programación_ sea 9. La cuenta es (10 + 8) / 2. (No se tienen en cuenta el 2 de mate1 ni el 2 de Base de datos)
+7. Verificar que la cantidad de materias aprobadas en programación es 2.
+8. Verificar que el promedio de _TUESS_ es 7. La cuenta es (6 + 8) / 2
+9. Al intentar ver el promedio de _TO_ no se puede, porque no está inscripto en esa carrera
+10. Inscribir a Alex a _TO_, Al interntar ver el promedio de TO no se puede porque no tiene ninguna materia aprobada 
+11. Verificar que el promedio contando todas sus carreras es 8. La cuenta es (10 + 6 + 8 + 8) / 4.
+12. Verificar que la historia de cursadas de Alex para mate 1 es una cursada con 2, y luego otra con 8.
+
+Tip: Usar un `method initialize()` en el describe para no repetir el escenario inicial con el test del punto anterio
 
 
 ## Parte 2 Condiciones para inscribirse
@@ -65,7 +102,10 @@ Requerimientos
 
 
 ### Casos de prueba
-Utilizando el modelo del caso de prueba anterir, se determinan lo siguientes pre-requisitos:
+Se utiliza el escenario del caso de prueba anterior, incluyendo las carreras inscriptas y materias aprobadas 
+que se menciona en los primeros 2 puntos.
+
+Además, se se determinan lo siguientes pre-requisitos:
 
 * Los requisitos de Obj2 son Obj1 y Mate1.
 * Los requisitos de Obj3 son Obj2 y BD.
@@ -78,6 +118,7 @@ Utilizando el modelo del caso de prueba anterir, se determinan lo siguientes pre
 3. Verificar que la carrera de TUESS le permite a Alex inscribirse en MEyA, TyS, Desarrollo Local.
 4. Verificar que las materias habilitadas para Alex son MEyA, TyS, Desarrollo Local,obj2 y bd
 3. Realizar la inscripción de Alex a Obj2 y verificar que efectivamente quedó inscripta. 
+
 
 
 ## Parte 3: Listas de espera
