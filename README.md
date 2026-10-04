@@ -14,7 +14,7 @@ Construir un modelo que permita resolver los siguientes requerimientos:
 
     > **Tip**: La nota con la que la persona aprobó una materia, no puede ser un atributo de la persona (porque la persona tiene muchas notas) ni de la materia (porque una materia es cursada por muchas personas). 
 
-2. Conocer para una persona: si tiene o no aprobada una materia (su nota alcanza la calificación 6), 
+2. Conocer para una persona: si tiene o no aprobada una materia (su nota alcanza la calificación 6). Es decir, si alguna vez alcanzó esa nota en esa materia (la pudo haber cursado mas de una vez). 
 
 3. Conocer para una persona la cantidad de materias aprobadas y el promedio **en una determinada carrera**
 
@@ -35,6 +35,7 @@ En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Econ
 Escenario
 1. Hacer que la estudiante _Alex_ se anote en las carreras de Programación y TUESS. 
 2. Registrar la aprobación de Matemática 1 (con un 8) y Objetos 1 (con un 10)
+3. Verificar que Alex tiene aprobada Mate1 y Obj1
 3. Verificar que su promedio en Programación sea 9. 
 4. Verificar que todas las materias para Alex sean todas las de programación y también todas las de TUESS.  
 
@@ -60,7 +61,8 @@ Requerimientos
 
 ### Casos de prueba
 
-Verificar que Alex puede inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1.
+1. Verificar que Alex puede inscribirse a Objetos 2, pues tiene aprobadas Objetos 1 y Matemática 1.
+2. Realizar la inscripción de Alex a Obj2 y verificar que efectivamente quedó inscripta. 
 
 
 ## Parte 3: Listas de espera
