@@ -32,10 +32,14 @@ En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Econ
 
 Escenario
 1. Hacer que la estudiante _Alex_ se anote en las carreras de Programación y TUESS. 
-2. Registrar la aprobación de Matemática 1 (con un 8) y Objetos 1 (con un 10)
-3. Verificar que Alex tiene aprobada Mate1 y Obj1
-3. Verificar que su promedio en Programación sea 9. 
-4. Verificar que todas las materias para Alex sean todas las de programación y también todas las de TUESS.  
+2. Registrar que alex cursó Matemática 1 con nota 2, luego  de Matemática 1 (con un 8), Objetos 1 (con un 10) y Base de Datos (con un 2)
+3. Intentar registrar que Alex cursó Matemática 1 con nota 7. No se debería poder porque ya está aprobada
+4. Intentar registrar que Alex cursó Objetos 2 con nota 12. No se debería poder porque no es una nota válida
+5. Verificar que Alex tiene aprobada Mate1 y Obj1
+6. Verificar que su promedio en Programación sea 9.
+7. Al intentar ver el promedio de TUESS no se puede, porque no tiene ninguna materia aprobada.
+8. Al intentar ver el promedio de TO no se puede, porque no está inscirpto en esa carrera
+9. Verificar que la historia de cursadas de Alex para mate 1 es una cursada con 2, y luego otra con 8.
 
 
 ## Parte 2 Condiciones para inscribirse
