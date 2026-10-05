@@ -76,7 +76,7 @@ Teniendo en cuenta las inscripciones a carreras del punto anterior:
 11. Verificar que el promedio contando todas sus carreras es 8. La cuenta es (10 + 6 + 8 + 8) / 4.
 12. Verificar que la historia de cursadas de Alex para mate 1 es una cursada con 2, y luego otra con 8.
 
-Tip: Usar un `method initialize()` en el describe para no repetir el escenario inicial con el test del punto anterio
+    > **Tip**: Usar un `method initialize()` en el describe para no repetir el escenario inicial con el test del punto anterio
 
 
 ## Parte 3 Incripciones a las materias
@@ -87,7 +87,7 @@ materia la colección de estudiantes que se inscribieron.
 Las materias de las carreras pueden establerecer _requisitos_ para aceptar una persona estudiante. Los
 _requisitos_ son otras materias que deberían haber cursado previamente:
 
-TIP: Ojo!  Armar el grafo de requisitos puede no ser tan trivial.
+ > **Tip**  Ojo!  Armar el grafo de requisitos puede no ser tan trivial.
 
 Si se elije configurar los requisitos en la instanciación usando un atributo constante en Materia:
 ``` 
@@ -167,48 +167,101 @@ Andy es una persona estudiante que está que está inscripta en la carrera de Pr
 
 Agregar al modelo la capacidad de expresar otros tipos de requisitos (no sólo un conjunto de materias previamente aprobadas) a la hora de verificar la inscripción a una materia. Otras opciones son:
 
-   * Requerir una cantidad de créditos. Esto implica que cada materia conozca la cantidad de _créditos_ que otorga. Por ejemplo, para inscribirse en Trabajo Final se necesita haber acumulado 250 créditos.
+   * Requerir una cantidad de créditos. Esto implica que cada materia conozca la cantidad de _créditos_ que otorga. Por ejemplo, para inscribirse en Trabajo Final se necesita haber acumulado 250 créditos de la carrera correspondiente
 
-   * Requerir todas las materias del año anterior. Para esto es necesario poder indicar a qué año pertenece cada materia. Por ejemplo, para cursar Obj3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. 
+   * Requerir todas las materias del año anterior. Para esto es necesario poder indicar a qué año pertenece cada materia. Por ejemplo, para cursar Obj3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año de la carrera correspondiente
 
    * No requerir nada. Es decir no tener requerimientos. Por ejemplo EPyL es una de las primeras materias y por lo tanto no tiene ninguna condición especial, cualquiera puede cursarla.
 
 Cada materia tiene sólo uno de estos tipos de requisitos: correlativas, cŕeditos, por año o nada. 
 
+> **Tip**: Encontrar una abstracción/tipo polimórfico que permita encapsular la responsabilidad de decidir si un estudiante cumple los requisitos. Luego hacer que cada materia conozca a un objeto (ya sea autodefinido o instancia de una clase) que lo implemente. La materia colabora con uno de estos objetos a la hora de saber si una persona estudiante puede o no inscribirse.
+
+### Casos de prueba.
+
+#### Correlativas y Sin requisitos
+    Los casos de prueba desarrollados en los puntos anteriores deberían seguir funcionando si usando las opciones "sinRequisitos" y "correlativas"
+    según corresponda.
+    El año y créditos de las materias son indistintos para esta pruebas, pudiendo usarse cualquier valor por defecto.
+
+### Créditos y Año.
 
 
-## Parte 3: Listas de espera
+    Ajustar las materias de la carrera TO con la siguiente información.
+    - Lectura y escritura académica (LEA): año 1, creditos 8, no tiene requisitos
+    - Ciencias de la Salud, año 1, creditos 8, no tiene requisitos
+    - Psicología, año 2, creditos 4, debe haber aprobado el año anterior completo
+    - Antropología, año 2, cŕeditos 4, debe tener 8 créditos aprobados
+    - Sociología, año 3, créditos 8, debe tener 10 créditos aprobados
+
+    Ajustar las materias de programación con estos datos:
+    - obj1: año 1 créditos 8
+    - mate1: año 1 créditos 8
+    - base de datos: año 1 créditos 8
+    
+    Inscribir a Andy en la carrera TO. Además andy debería estar inscripta, al igual que en un test anterior, en programación,
+    con las materias obj1 y mate1 cursadas ambas con nota 10.
+
+    - verificar que las únicas materias  a las que se puede inscribir Andy en TO son LEA y Ciencias de la Salud
+    - registrar que Andy cursó LEA con nota 10 (andy tiene 8 créditos en to, no aprobó aún 1er año de TO)
+    - verificar que las únicas materias a las que se puede inscribir Andy en TO son Ciencias de la Salud y Antropología
+    - registrar que Andy cursó Antropología con nota 10 (andy tiene 12 créditos en TO, no aprobó aún 1er año de TO)
+    - verificar que las únicas materias a las que se puede inscribir Andy en TO son Ciencias de la Salud y Sociología
+    - registrar que Andy cursó Ciencias de la Salud con nota 10, (andy tiene 20 créditos en TO, ya aprobó primer Año de TO)
+    - verificar que las únicas materias a las que puede inscribir Andy en TO son Psicología y Sociología
+    - inscribir a Andy a Psicología
+    - inscribir a Andy a Sociología
+    - verificar que la lista de estudiantes inscriptos a Psicología está compuesta solo por Andy
+    - verificar que la lista de estudiantes de Sociología está compuesta solo por por Andy
+    
+
+
+### BONUS
+
+Estos requerimientos son opcionales. Asegurarse de que todo lo anterior funcione con sus test en verde antes de 
+trabajar sobre esto.
+Recomendación: trabajar en un feature branch separado de main/master
+
+## Bonus 1: Listas de espera
 
 Extender el modelo para considerar que cada materia tiene un “cupo”, es decir, una cantidad máxima de estudiantes que se pueden inscribir. Para manejar el exceso en los cupos, las materias tienen una lista de espera, de estudiantes que quisieran cursar pero no tienen lugar. Entonces, como resultado de la inscripción, la persona puede quedar confirmada, o en lista de espera (ambas situaciones, si cumple con las condiciones del punto 4 de la parte 2). No se requiere que el sistema conteste nada con respecto al resultado de la inscripción. 
 
 ### Requerimientos:
 
-1. Poder de baja un estudiante de una materia. En caso de haber estudiantes en lista de espera, el primer estudiante de la lista debe obtener su lugar en la materia.
+1. Poder de baja un estudiante de una materia. En caso de haber estudiantes en lista de espera, el primer estudiante de esa lista debe obtener su lugar en la materia.
 
 2. Brindar resultados de inscripción, específicamente:
 
     * Las personas estudiantes inscriptos a una materia dada.
     * Las personas estudiantes en lista de espera para una materia dada.
 
-3. Brindar información útil para una persona estudiante, específicamente: las materias en las que está inscripta, las materias en las que quedó en lista de espera. _TIP_ para esto, usar la lista de todas las materias de las carreras que cursa, resuelto anteriormente.
+3. Brindar información útil para una persona estudiante, específicamente: las materias en las que está inscripta, las materias en las que quedó en lista de espera. 
 
 
 ### Casos de prueba 
 Suponiendo que
 
-* Alex tiene aprobadas EPyL, Mate1, Obj1, BD, MEyA, TyS.
-* Luisa, Romina y Alicia que aprobaron EPyL, Obj1, y Mate1; 
-* Ana que aprobó solamente EPyL. 
 * Luisa, Romina, Alicia y Ana están cursando Programación.
-* Obj2 tiene cupo para 3 estudiantes.
+* Alex cursa programación y tiene aprobadas las mismas materias de los tests anteriores (mate 1 con 8 y obj1 con 10)
+* Andy cursa programación y tiene aprobadas las mismas materias de los tests anteriores (mate 1 con 10 y obj1 con 10)
+* Luisa curso obj1 con 8 y mate1 con 7
+* Romina curso obj1 con 6 y mate1 con 6
+* Alicia curso obj1 con 10 y mate1 con 9 y elp con 6
+* Ana solo cursó obj1 con 10
 
-Realizar estos tests:
-* Alex puede inscribirse en Obj2, pero no en Obj3 (porque le falta Obj2) ni en Obj1 (porque ya la tiene aprobada).
+* Obj2 tiene cupo para 2 estudiantes, el resto de las materias usar un default de 30 estudiantes
 
-* Alex puede inscribirse en las materias Obj2 y PConc de la carrera de Programacion; y en Economía de la TUESS.
-* Si se inscriben, en este orden, Luisa, Romina, Alicia y Alex en Obj2, entonces las tres primeras quedan confirmadas, y Alex queda en lista de espera.
-* Si después se da de baja Romina en Obj2, entonces Alex pasa a tener la inscripción confirmada en esa materia.
+Realizar la siguiente secuencia
 
+* Inscribir a Alex en obj3, queda confirmada, la lista de espera está vacía
+* Inscribir a Luisa en obj3. queda confirmada, los inscriptos son Alex y Luisa, la lista de espera está vacía
+* Inscribir a Romina, queda en espera pues ya está el cupo de 2 lleno, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina 
+* Intentar inscribir a Ana, No se puede porque no cumple los requisitos, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina
+* Incribir a Andy, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina y Andy
+* Incribir a Alicia, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina,  Andy, Alicia
+
+Si Ahora se da de baja Luisa, la que ocupa esa posición debe ser Romina por ser la primera de la lista de espera. Los confirmados
+son Alex y Luisa, la de espera Andy y Alicia.
 
 
 ## Parte 5: Gestión de la lista de espera
@@ -217,7 +270,11 @@ Incorpora al modelo la capacidad de configurar diferentes _estrategias para gest
 
 - Por orden de llegada: si te querés inscribir y no hay lugar vas a la lista de espera por llegar último
 - Elitista: entran los que tengan mejor promedio.
-- Por grado de avance: Inscribimos al estudiante con más materias aprobadas en la carrera.
+- Por grado de avance: Inscribimos al estudiante con mayor cantidad de créditos de la carrera.
 
 
 ### Casos de prueba 
+    - si obj2 tiene configurado "orden de llegada", se comporta como en el punto anterior
+    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Andy pues tiene mejor promedio
+    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Alicia pues tiene más créditos
+    
