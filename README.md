@@ -214,9 +214,13 @@ Cada materia tiene sólo uno de estos tipos de requisitos: correlativas, crédit
     - verificar que la lista de estudiantes inscriptos a Psicología está compuesta solo por Andy
     - verificar que la lista de estudiantes de Sociología está compuesta solo por Andy
     
+## Parte 5: Reflexiones sobre la solución
+    - Realizar un diagrama dinámico que muestre la relación entre Alex, sus materias cursadas (con la nota) e inscriptas de acuerdo al caso de prueba del punto 3
+    - Realizar un diagrama estático que muestre los tipos/clases involucrados que se ven en el diagrama dinámico del punto anterior
+    - Mostrar un diagrama estático que refleje el polimorfismo usado en el punto 4 (requisitos de la materia). Aclarar en texto cuál es el mensaje polimórfico, quién es el emisor del mensaje y cuáles son los objetos autodefinidos o clases que lo implementan.
 
 
-### BONUS
+# BONUS
 
 Estos requerimientos son opcionales. Asegurarse de que todo lo anterior funcione con sus test en verde antes de 
 trabajar sobre esto.
@@ -236,7 +240,6 @@ Extender el modelo para considerar que cada materia tiene un “cupo”, es deci
     * Las personas estudiantes en lista de espera para una materia dada.
 
 3. Brindar información útil para una persona estudiante, específicamente: las materias en las que está inscripta, las materias en las que quedó en lista de espera. 
-
 
 ### Casos de prueba 
 Suponiendo que
