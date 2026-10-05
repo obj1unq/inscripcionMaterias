@@ -11,7 +11,7 @@ Cada materia pertenece a una única carrera.
 ### Requerimientos
 Construir un modelo que permita resolver los siguientes requerimientos: 
 
-1. Inscribir a una persona estudiante a una carrera. Una persona no puede inscribirse a una carrera ya inscripta.
+1. Inscribir a una persona estudiante a una carrera. Una persona estudiante no puede inscribirse a una carrera ya inscripta.
 
 2. Saber las carreras en las que se inscribió una persona estudiante
 
