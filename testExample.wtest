@@ -76,8 +76,8 @@ describe "test de universidad" {
 
     ana.cursada(obj1, 10)
 
-    luisa.cursada(mate1, 8)
-    luisa.cursada(obj1, 7)
+    luisa.cursada(mate1, 7)
+    luisa.cursada(obj1, 8)
     
 
 
@@ -157,7 +157,7 @@ describe "test de universidad" {
     assert.equals(#{alex, luisa}, obj2.inscriptos())
     assert.equals([romina], obj2.espera())
 
-    assert.throwsException({ana.inscribirMateria(#{obj2})})
+    assert.throwsException({ana.inscribirMateria(obj2)})
     
     andy.inscribirMateria(obj2)
     assert.equals(#{alex, luisa}, obj2.inscriptos())
@@ -167,7 +167,7 @@ describe "test de universidad" {
     assert.equals(#{alex, luisa}, obj2.inscriptos())
     assert.equals([romina, andy, alicia], obj2.espera())
 
-    assert.throwsException({alicia.inscribirMateria(#{obj2})})
+    assert.throwsException({alicia.inscribirMateria(obj2)})
 
 
   }
@@ -183,7 +183,7 @@ describe "test de universidad" {
     assert.equals(#{alex, romina}, obj2.inscriptos())
     assert.equals([andy], obj2.espera())
 
-    assert.throwsException({obj2.baja(ana)})
+    assert.throwsException({obj2.bajar(ana)})
     assert.equals(#{alex, romina}, obj2.inscriptos())
     assert.equals([andy], obj2.espera())
     
