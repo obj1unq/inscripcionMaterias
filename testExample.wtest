@@ -2,10 +2,10 @@ import example.*
 
 describe "test de universidad" {
 
-  const epl = new Materia()
+  const epl = new Materia(creditos=8)
   const mate1 = new Materia(año=1, creditos=8)
   const obj1 = new Materia(año=1, creditos=8)
-  const obj2 = new Materia()
+  const obj2 = new Materia(cupo=2)
   const obj3 = new Materia()
   const bd = new Materia(año=1, creditos=8)
   const pconc = new Materia()
@@ -26,6 +26,13 @@ describe "test de universidad" {
   const alex = new Estudiante()
   const andy = new Estudiante()
 
+  const alicia = new Estudiante()
+  const romina = new Estudiante()
+  const ana = new Estudiante()
+  const luisa = new Estudiante()
+
+ 
+
 
 
   method initialize() {
@@ -35,9 +42,9 @@ describe "test de universidad" {
     pconc.requisito(new Correlativas(materias =#{obj1,bd}))
     desarrolloLocal.requisito(new Correlativas(materias =#{meya}))
 
-    psicologia.requisito(new AñoCompleto(carrera=to)) //otra opcion es cambiar para que las materias sepan la carrera, pero me lleva refactorizar la manera de construirlas
-    antro.requisito(new Creditos(carrera=to, creditosNecesarios=8))
-    socio.requisito(new Creditos(carrera=to, creditosNecesarios=10))
+    psicologia.requisito(añoCompleto)
+    antro.requisito(new Creditos(creditosNecesarios=8))
+    socio.requisito(new Creditos(creditosNecesarios=10))
 
 
     alex.inscribir(programacion)
@@ -54,6 +61,24 @@ describe "test de universidad" {
     andy.inscribir(programacion)
     andy.cursada(obj1,10)
     andy.cursada(mate1, 10)
+
+    alicia.inscribir(programacion)
+    romina.inscribir(programacion)
+    ana.inscribir(programacion)
+    luisa.inscribir(programacion)
+
+    alicia.cursada(obj1, 10)
+    alicia.cursada(mate1, 9)
+    alicia.cursada(epl, 6)
+
+    romina.cursada(mate1, 6)
+    romina.cursada(obj1, 6)
+
+    ana.cursada(obj1, 10)
+
+    luisa.cursada(mate1, 8)
+    luisa.cursada(obj1, 7)
+    
 
 
   }
@@ -116,7 +141,79 @@ describe "test de universidad" {
 
     assert.equals(#{andy}, psicologia.inscriptos())
     assert.equals(#{andy}, socio.inscriptos())
-
     
   }
+
+  method inscribirObj2() {
+    alex.inscribirMateria(obj2)
+    assert.equals(#{alex}, obj2.inscriptos())
+    assert.equals([], obj2.espera())
+
+    luisa.inscribirMateria(obj2)
+    assert.equals(#{alex, luisa}, obj2.inscriptos())
+    assert.equals([], obj2.espera())
+
+    romina.inscribirMateria(obj2)
+    assert.equals(#{alex, luisa}, obj2.inscriptos())
+    assert.equals([romina], obj2.espera())
+
+    assert.throwsException({ana.inscribirMateria(#{obj2})})
+    
+    andy.inscribirMateria(obj2)
+    assert.equals(#{alex, luisa}, obj2.inscriptos())
+    assert.equals([romina, andy], obj2.espera())
+
+    alicia.inscribirMateria(obj2)
+    assert.equals(#{alex, luisa}, obj2.inscriptos())
+    assert.equals([romina, andy, alicia], obj2.espera())
+
+    assert.throwsException({alicia.inscribirMateria(#{obj2})})
+
+
+  }
+
+  test "lista de espera por orden de llegada" {
+    self.inscribirObj2()
+    
+    obj2.bajar(luisa)
+    assert.equals(#{alex, romina}, obj2.inscriptos())
+    assert.equals([andy, alicia], obj2.espera())
+
+    obj2.bajar(alicia)
+    assert.equals(#{alex, romina}, obj2.inscriptos())
+    assert.equals([andy], obj2.espera())
+
+    assert.throwsException({obj2.baja(ana)})
+    assert.equals(#{alex, romina}, obj2.inscriptos())
+    assert.equals([andy], obj2.espera())
+    
+    obj2.bajar(alex)
+    assert.equals(#{romina, andy}, obj2.inscriptos())
+    assert.equals([], obj2.espera())
+
+    obj2.bajar(romina)
+    assert.equals(#{andy}, obj2.inscriptos())
+    assert.equals([], obj2.espera())
+
+  }
+
+  test "lista de espera por promedio" {
+    self.inscribirObj2()
+    obj2.criterioDeBaja(elitista)
+
+    obj2.bajar(luisa)
+    assert.equals(#{alex, andy}, obj2.inscriptos())
+    assert.equals([romina, alicia], obj2.espera())
+  }
+
+  test "lista de espera por avance" {
+    self.inscribirObj2()
+    obj2.criterioDeBaja(avance)
+
+    obj2.bajar(luisa)
+
+    assert.equals(#{alex, alicia}, obj2.inscriptos())
+    assert.equals([romina,andy], obj2.espera())
+  }
+
 }

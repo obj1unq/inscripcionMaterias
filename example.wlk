@@ -17,26 +17,49 @@ class Correlativas {
 class Creditos {
   
   const creditosNecesarios
-  const carrera 
 
   method cumple(estudiante, materia) {
-    return estudiante.creditos(carrera) >= creditosNecesarios
+    return estudiante.creditos(materia.carrera()) >= creditosNecesarios
   }
 
 }
 
-class AñoCompleto {
-  const carrera 
+object añoCompleto {
   method cumple(estudiante, materia) {
-    return estudiante.añoCompleto(carrera, materia.añoPrevio()) 
+    return estudiante.añoCompleto(materia.carrera(), materia.añoPrevio()) //me canse de refactorizar, es muy tarde 
   }
 
+}
+
+object ordenDeLlegada {
+  method siguiente(carrera, espera) {
+    return espera.first()
+  }
+}
+object elitista {
+  method siguiente(carrera, espera) {
+    return espera.max({estudiante => estudiante.promedio(carrera)})
+  }
+}
+
+object avance {
+  method siguiente(carrera, espera) {
+    return espera.max({estudiante => estudiante.creditos(carrera)})
+  }
 }
 
 class Materia {
   var requisito = sinRequisito
   const property año = 1
   const property creditos = 0
+  const cupo = 30
+  const property espera = []
+  var property criterioDeBaja = ordenDeLlegada
+
+  //Uso referencia cruzada acá, evitarlo llevaría a necesitar un objeto universidad en la cual estén todas las carreras 
+  //para ir a buscar la carrera donde está una materia. Eso obliga alguna manganeta en la generación de la relación
+  //-initialize, o setter- usé ambos para ver como quedaba.
+  var property carrera = null 
 
   const property inscriptos = #{}
 
@@ -49,7 +72,7 @@ class Materia {
   }
 
   method inscripto(estudiante) {
-    return inscriptos.contains(estudiante)
+    return inscriptos.contains(estudiante) or espera.contains(estudiante)
   } 
 
   method cumpleRequisitos(estudiante) {
@@ -60,12 +83,57 @@ class Materia {
     return not self.inscripto(estudiante) and self.cumpleRequisitos(estudiante)
   }
   method inscribir(estudiante) {
-    inscriptos.add(estudiante)
+    if (self.hayCupo()) {
+      inscriptos.add(estudiante)
+    }
+    else {
+      espera.add(estudiante)
+    }
+  }
+
+  method hayCupo() {
+    return inscriptos.size() < cupo
+  }
+  method bajar(estudiante) {
+    self.validarBajar(estudiante)
+    if (espera.contains(estudiante)) {
+      espera.remove(estudiante)
+    }
+    else {
+      inscriptos.remove(estudiante)
+      if (not espera.isEmpty()) {
+        const movible = criterioDeBaja.siguiente(carrera, espera)
+        espera.remove(movible)
+        inscriptos.add(movible)
+      }
+    }
+
+  }
+  method validarBajar(estudiante) {
+    if (not self.inscripto(estudiante)) {
+      self.error("No se puede dar de baja un estudiante que no está inscript")
+    }
   }
 }
 class Carrera {
-  const property materias
+  var materias = null
 
+  method initialize() {
+    self._asignarCarrera()
+  }
+
+  method materias() {
+    return materias
+  }
+
+  method _asignarCarrera() {
+    materias.forEach({materia => materia.carrera(self)})
+  }
+
+  method materias(_materias) {
+    materias = _materias
+    self._asignarCarrera()
+  }
   method pertenece(materia) {
     return materias.contains(materia)
   }
