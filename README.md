@@ -21,7 +21,7 @@ Construir un modelo que permita resolver los siguientes requerimientos:
 
 En los ejemplos incluiremos tres carreras: _Programación_, _Tecnicatura en Economía Social y solidaria(TUESS)_ y _Terapia Ocupacional (TO)_.
 
-* Programación incluye estas materias: Elementos de Programación, Matemática 1, Objetos 1, Objetos 2, Objetos 3, Trabajo Final, Bases de Datos(BD), Programación Concurrente (PConc)
+* Programación incluye estas materias: Elementos de Programación y lógica (elp), Matemática 1 (mate1), Objetos 1 (obj1), Objetos 2 (obj2), Objetos 3 (obj3), Trabajo Final (tip), Bases de Datos(BD), Programación Concurrente (PConc)
 * TUESS incluye Matemáticas para economía y administración (MEyA), Trabajo y sociedad (TyS), Economía, Desarrollo local.
 * TO incluye Lectura y escritura académica (LEA), Ciencias de la Salud, Psicología, Antropología, Sociología.
 
@@ -246,22 +246,32 @@ Suponiendo que
 * Andy cursa programación y tiene aprobadas las mismas materias de los tests anteriores (mate 1 con 10 y obj1 con 10)
 * Luisa curso obj1 con 8 y mate1 con 7
 * Romina curso obj1 con 6 y mate1 con 6
-* Alicia curso obj1 con 10 y mate1 con 9 y elp con 6
+* Alicia curso obj1 con 10 y mate1 con 9 y epl con 6
 * Ana solo cursó obj1 con 10
 
-* Obj2 tiene cupo para 2 estudiantes, el resto de las materias usar un default de 30 estudiantes
+* epl otorga 8 créditos 
+* Obj2 tiene cupo para 2 estudiantes, el resto de las materias usa un default de 30 estudiantes
 
 Realizar la siguiente secuencia
 
-* Inscribir a Alex en obj3, queda confirmada, la lista de espera está vacía
-* Inscribir a Luisa en obj3. queda confirmada, los inscriptos son Alex y Luisa, la lista de espera está vacía
-* Inscribir a Romina, queda en espera pues ya está el cupo de 2 lleno, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina 
-* Intentar inscribir a Ana, No se puede porque no cumple los requisitos, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina
-* Incribir a Andy, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina y Andy
-* Incribir a Alicia, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina,  Andy, Alicia
+* Inscribir a Alex en obj2, queda confirmada, la lista de espera está vacía
+* Inscribir a Luisa en obj2. queda confirmada, los inscriptos son Alex y Luisa, la lista de espera está vacía
+* Inscribir a Romina en obj2, queda en espera pues ya está el cupo de 2 lleno, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina 
+* Intentar inscribir a Ana en obj2, No se puede porque no cumple los requisitos, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina
+* Incribir a Andy en obj2, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina y Andy
+* Incribir a Alicia en obj2, Queda en lista de espera, los inscriptos son Alex y Luisa, en la lista de espera solo está Romina,  Andy, Alicia
+* Intentar inscribir a Alicia en obj2, No se puede porque aunque no esté confirmada, ya realizó el proceso de  inscripción sin problema
 
 Si Ahora se da de baja Luisa, la que ocupa esa posición debe ser Romina por ser la primera de la lista de espera. Los confirmados
-son Alex y Luisa, la de espera Andy y Alicia.
+son Alex y Romina, la de espera Andy y Alicia.
+
+Si se da de baja Alicia, los inscriptos son Alex y Romina, la espera solo está Andy
+
+Si se intenta dar de baja Ana no se debería poder, porque ana no estaba inscripta, se mantiene Alex y Romina como inscriptos y Andy sóla en la lista de espera
+
+Si se da de baja Alex, los inscriptos son son Romina y Andy, la lista de espera está vacía
+
+si se da de baja Romina, sólo Andy queda como inscripta y la lista de espera sigue vacía.
 
 
 ## Parte 5: Gestión de la lista de espera
@@ -275,6 +285,8 @@ Incorpora al modelo la capacidad de configurar diferentes _estrategias para gest
 
 ### Casos de prueba 
     - si obj2 tiene configurado "orden de llegada", se comporta como en el punto anterior
-    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Andy pues tiene mejor promedio
-    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Alicia pues tiene más créditos
+    
+    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Andy pues tiene mejor promedio. Testear sólo la esa baja
+
+    - si obj2 tiene configurado "elitista", en lugar de reemplazar a luisa por Romina, la que ocupa ese lugar es Alicia pues tiene más créditos. Testear sólo la esa baja
     
